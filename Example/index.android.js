@@ -1,13 +1,8 @@
-/**
- * Sample React Native App
- * https://github.com/facebook/react-native
- * @flow
- */
-
 import React, { Component } from 'react';
-import { AppRegistry, StyleSheet, Text, View, Alert, Platform } from 'react-native';
+import { AppRegistry, StyleSheet, Text, View, Alert, PermissionsAndroid } from 'react-native';
+import Notification from 'things-notification';
 
-import Notification from 'react-native-notification-listener';
+const PERMISSION = PermissionsAndroid.PERMISSIONS.READ_PHONE_STATE;
 
 export default class NotificationListener extends Component {
 
@@ -24,15 +19,14 @@ export default class NotificationListener extends Component {
     //  console.log("msg received", msg);
     //});
 
-    if(Platform.OS === 'android' && Platform.Version >= 23) {
-      this._checkPermission();
-    }
+    this._checkPermissionPhoneState();
+    this._checkPermissionNotification();
 
     this.subscription = Notification.on('notification', (data) => {
       console.log("notification received:", JSON.stringify(data));
       this.setState({
-        sender: data.packageName,
-        text: data.tickerText
+        sender: data.app,
+        text: data.text
       });
     });
   }
@@ -41,16 +35,30 @@ export default class NotificationListener extends Component {
     this.subscription.remove();
   }
 
-  _checkPermission = () => {
+  _checkPermissionPhoneState = () => {
+    PermissionsAndroid.checkPermission(PERMISSION).then((result) => {
+      if (!result) {
+        PermissionsAndroid.requestPermission(PERMISSION).then((result) => {
+          if (result) {
+            console.log("User accepted read phone state permission");
+          } else {
+            console.log("User refused read phone state permission");
+          }
+        });
+      }
+    });
+  }
+
+  _checkPermissionNotification = () => {
     Notification.getPermissionStatus()
       .then(response => {
         if (response === 'denied') {
-          this._requestPermission();
+          this._requestPermissionNotification();
         }
       });
   }
 
-  _requestPermission = () => {
+  _requestPermissionNotification = () => {
     Alert.alert(
       'Can we access your notifications?',
       'We need access so that blah blah blah',

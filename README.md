@@ -1,1 +1,1 @@
-react-native-notification-listener
+things-notification

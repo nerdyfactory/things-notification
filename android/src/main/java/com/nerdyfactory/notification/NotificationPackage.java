@@ -10,12 +10,12 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-public class NLPackage implements ReactPackage {
+public class NotificationPackage implements ReactPackage {
 
     @Override
     public List<NativeModule> createNativeModules(ReactApplicationContext reactContext) {
         List<NativeModule> modules = new ArrayList<>();
-        modules.add(new NLModule(reactContext)); // adding the module to package
+        modules.add(new NotificationModule(reactContext)); // adding the module to package
         return modules;
     }
 

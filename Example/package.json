@@ -9,7 +9,7 @@
 	"dependencies": {
 		"react": "~15.3.1",
 		"react-native": "0.37.0",
-    "react-native-notification-listener": "file:../"
+    "things-notification": "file:../"
 	},
 	"devDependencies": {
 		"babel-jest": "17.0.2",

@@ -1,27 +1,4 @@
 {
-  "name": "react-native-notification-listener",
-  "version": "0.0.1",
-  "description": "notification listener module for react native",
-  "main": "index.js",
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/nerdyfactory/react-native-notification-listener.git"
-  },
-  "bugs": {
-    "url": "https://github.com/nerdyfactory/react-native-notification-listener/issues"
-  },
-  "keywords": [
-  	"react-native",
-  	"android",
-    "ios",
-    "notification",
-    "listener",
-    "message",
-    "incoming"
-  ],
-  "license": "Apache-2.0",
-  "author": {
-    "name": "nerdyfactory",
-    "url": "https://github.com/nerdyfactory"
-  }
+  "name": "things-notification",
+  "version": "0.0.1"
 }
