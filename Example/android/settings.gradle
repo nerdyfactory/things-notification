@@ -1,5 +1,5 @@
 rootProject.name = 'NotificationListener'
 
 include ':app'
-include ':react-native-notification-listener'
-project(':react-native-notification-listener').projectDir = new File(rootProject.projectDir, '../../android')
+include ':things-notification'
+project(':things-notification').projectDir = new File(rootProject.projectDir, '../../android')
