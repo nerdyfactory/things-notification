@@ -8,8 +8,6 @@ import android.provider.Settings;
 import android.provider.Telephony;
 
 import com.facebook.react.bridge.ReactApplicationContext;
-import com.facebook.react.bridge.WritableNativeMap;
-import com.facebook.react.modules.core.DeviceEventManagerModule;
 
 public class Helper {
     private ReactApplicationContext mContext;
@@ -32,11 +30,5 @@ public class Helper {
             ResolveInfo mInfo = pm.resolveActivity(iIntent,0);
             return mInfo.activityInfo.packageName;
         }
-    }
-
-    public void sendEvent(WritableNativeMap params) {
-        mContext
-                .getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class)
-                .emit("notificationReceived", params);
     }
 }

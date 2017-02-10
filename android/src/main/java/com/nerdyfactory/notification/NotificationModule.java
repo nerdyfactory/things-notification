@@ -13,12 +13,13 @@ import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.bridge.ReactContextBaseJavaModule;
 import com.facebook.react.bridge.ReactMethod;
 import com.facebook.react.bridge.WritableNativeMap;
+import com.facebook.react.modules.core.DeviceEventManagerModule;
 
 import java.util.Set;
 
 public class NotificationModule extends ReactContextBaseJavaModule implements ActivityEventListener {
     private static final String TAG = "NotificationModule";
-    private final ReactApplicationContext reactContext;
+    private static ReactApplicationContext reactContext;
     private static Helper mHelper;
     public static String SmsApp;
 
@@ -38,7 +39,9 @@ public class NotificationModule extends ReactContextBaseJavaModule implements Ac
     }
 
     public static void sendEvent(WritableNativeMap params) {
-        mHelper.sendEvent(params);
+        reactContext
+                .getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class)
+                .emit("notificationReceived", params);
     }
 
     @ReactMethod
@@ -55,10 +58,7 @@ public class NotificationModule extends ReactContextBaseJavaModule implements Ac
     @ReactMethod
     public void requestPermission() {
         final Intent i = new Intent();
-        //i.setAction(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
         i.setAction(Settings.ACTION_NOTIFICATION_LISTENER_SETTINGS);
-        //i.addCategory(Intent.CATEGORY_DEFAULT);
-        //i.setData(Uri.parse("package:" + this.reactContext.getPackageName()));
         i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         i.addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
         i.addFlags(Intent.FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS);
