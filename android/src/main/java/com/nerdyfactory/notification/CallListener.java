@@ -21,7 +21,7 @@ public class CallListener extends BroadcastReceiver {
                 Log.d(TAG, "Call received: "+incomingNumber);
                 final WritableNativeMap params = new WritableNativeMap();
                 params.putString("app", "phone");
-                params.putString("text", "전화왔습니다");
+                params.putString("text", incomingNumber);
                 NotificationModule.sendEvent(params);
             }
         }, PhoneStateListener.LISTEN_CALL_STATE);
