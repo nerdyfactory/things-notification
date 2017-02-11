@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { AppRegistry, StyleSheet, Text, View, Alert, PermissionsAndroid } from 'react-native';
+import { AppRegistry, StyleSheet, Text, View, Alert, PermissionsAndroid, AppState } from 'react-native';
 import Notification from 'things-notification';
 
 const PERMISSION = PermissionsAndroid.PERMISSIONS.READ_PHONE_STATE;
@@ -15,24 +15,18 @@ export default class NotificationListener extends Component {
   }
 
   componentDidMount() {
-    //Notification.test((msg) => {
-    //  console.log("msg received", msg);
-    //});
-
     this._checkPermissionPhoneState();
     this._checkPermissionNotification();
 
-    this.subscription = Notification.on('notification', (data) => {
+    Notification.on('notification', (data) => {
       console.log("notification received:", JSON.stringify(data));
-      this.setState({
-        sender: data.app,
-        text: data.text
-      });
+      if (AppState.currentState === 'active') {
+        this.setState({
+          sender: data.app,
+          text: data.text
+        });
+      }
     });
-  }
-
-  componentWillUnmount() {
-    this.subscription.remove();
   }
 
   _checkPermissionPhoneState = () => {

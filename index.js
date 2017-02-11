@@ -6,10 +6,6 @@ const eventsMap = {
 const NotificationModule = NativeModules.NotificationModule;
 const Notification = {};
 
-//Notification.test = (callback) => {
-//  NotificationModule.test(callback);
-//}
-
 Notification.getPermissionStatus = () => {
   return NotificationModule.getPermissionStatus();
 }
@@ -23,12 +19,8 @@ Notification.on = (event, callback) => {
   if (!nativeEvent) {
     throw new Error('Invalid event');
   }
+  DeviceEventEmitter.removeAllListeners(nativeEvent);
   return DeviceEventEmitter.addListener(nativeEvent, callback);
-  //const listener = DeviceEventEmitter.addListener(nativeEvent, callback);
-  //return listener;
-  //return function remove() {
-  //  listener.remove();
-  //};
 }
 
 module.exports = Notification;

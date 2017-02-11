@@ -10,7 +10,7 @@ import java.util.Arrays;
 
 public class NotificationListener extends NotificationListenerService {
     private static final String TAG = "NotificationListener";
-    private final static String[] apps = {
+    private static final String[] apps = {
             "com.google.android.talk",      // TODO remove after testing
             "com.kakao.talk",
             "jp.naver.line.android",
