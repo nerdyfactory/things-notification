@@ -10,32 +10,15 @@ import java.util.Arrays;
 
 public class NotificationListener extends NotificationListenerService {
     private static final String TAG = "NotificationListener";
-    private static final String[] apps = {
-            "com.google.android.talk",      // TODO remove after testing
-            "com.kakao.talk",
-            "jp.naver.line.android",
-            "com.facebook.katana",
-            "com.twitter.android",
-            "com.google.android.gm",
-            "com.nhn.android.search",
-            "com.korail.korail",
-            "com.starbucks.co",
-            "com.tencent.mm"
-    };
 
     @Override
     public void onNotificationPosted(StatusBarNotification sbn) {
         Log.d(TAG, "Notification received: "+sbn.getPackageName()+":"+sbn.getNotification().tickerText);
 
         String app = sbn.getPackageName();
-
-        if (!Arrays.asList(apps).contains(app) && !NotificationModule.SmsApp.equals(app)) {
-            return;
-        }
-
         final WritableNativeMap params = new WritableNativeMap();
 
-        if (NotificationModule.SmsApp.equals(app)) {
+        if (app.equals(NotificationModule.SmsApp)) {
             params.putString("app", "sms");
         } else {
             params.putString("app", app);
