@@ -1,7 +1,8 @@
 import {NativeModules, DeviceEventEmitter} from 'react-native';
 
 const eventsMap = {
-    notification: 'notificationReceived'
+    notification: 'notificationReceived',
+    //installedApps: 'installedApps',
 };
 const NotificationModule = NativeModules.NotificationModule;
 const Notification = {};
@@ -12,6 +13,10 @@ Notification.getPermissionStatus = () => {
 
 Notification.requestPermission = () => {
   return NotificationModule.requestPermission();
+}
+
+Notification.getInstalledApps = () => {
+  return NotificationModule.getInstalledApps();
 }
 
 Notification.on = (event, callback) => {

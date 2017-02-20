@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { AppRegistry, StyleSheet, Text, View, Alert, PermissionsAndroid, AppState } from 'react-native';
+import { AppRegistry, StyleSheet, Text, View, Alert, PermissionsAndroid, TouchableOpacity, AppState, Image } from 'react-native';
 import Notification from 'things-notification';
 
 const PERMISSION = PermissionsAndroid.PERMISSIONS.READ_PHONE_STATE;
@@ -11,6 +11,7 @@ export default class NotificationListener extends Component {
     this.state = {
       sender: '',
       text: '',
+      apps: [],
     };
   }
 
@@ -19,7 +20,8 @@ export default class NotificationListener extends Component {
     this._checkPermissionNotification();
 
     Notification.on('notification', (data) => {
-      console.log("notification received:", JSON.stringify(data));
+      //console.log("AppState", AppState.currentState);
+      console.log("notification received", JSON.stringify(data));
       if (AppState.currentState === 'active') {
         this.setState({
           sender: data.app,
@@ -63,6 +65,13 @@ export default class NotificationListener extends Component {
     )
   }
   
+  getInstalledApps = () => {
+    Notification.getInstalledApps()
+      .then(response => {
+        console.log("Installed Apps", JSON.stringify(response));
+        this.setState({apps: response});
+      });
+  }
 
   render() {
     return (
@@ -76,6 +85,14 @@ export default class NotificationListener extends Component {
         <Text style={styles.instructions}>
           Text: {this.state.text}
         </Text>
+        <TouchableOpacity onPress={this.getInstalledApps}>
+          <Text style={styles.button}>Get Installed Apps</Text>
+        </TouchableOpacity>
+        <View style={styles.row}>
+          {this.state.apps.map((app,i) => (
+            <Image source={{uri: app.icon}} style={styles.image} key={i}/>
+          ))}
+        </View>
       </View>
     );
   }
@@ -97,6 +114,19 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     color: '#333333',
     marginBottom: 5,
+  },
+  button: {
+    fontSize: 20,
+    textDecorationLine: 'underline',
+    paddingVertical: 20,
+  },
+  row: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+  },
+  image: {
+    width: 25,
+    height: 25,
   },
 });
 

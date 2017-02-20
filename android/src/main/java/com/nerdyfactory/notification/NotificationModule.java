@@ -2,8 +2,12 @@ package com.nerdyfactory.notification;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
+import android.graphics.Bitmap;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.provider.Settings;
 import android.provider.Telephony;
@@ -11,15 +15,17 @@ import android.support.v4.app.NotificationManagerCompat;
 import android.util.Log;
 
 import com.facebook.react.bridge.ActivityEventListener;
-import com.facebook.react.bridge.Callback;
 import com.facebook.react.bridge.Promise;
 import com.facebook.react.bridge.ReactApplicationContext;
-import com.facebook.react.bridge.ReactContext;
 import com.facebook.react.bridge.ReactContextBaseJavaModule;
 import com.facebook.react.bridge.ReactMethod;
+import com.facebook.react.bridge.WritableNativeArray;
 import com.facebook.react.bridge.WritableNativeMap;
 import com.facebook.react.modules.core.DeviceEventManagerModule;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.util.List;
 import java.util.Set;
 
 public class NotificationModule extends ReactContextBaseJavaModule implements ActivityEventListener {
@@ -54,10 +60,10 @@ public class NotificationModule extends ReactContextBaseJavaModule implements Ac
         }
     }
 
-    public static void sendEvent(WritableNativeMap params) {
+    public static void sendEvent(String event, WritableNativeMap params) {
         reactContext
                 .getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class)
-                .emit("notificationReceived", params);
+                .emit(event, params);
     }
 
     @ReactMethod
@@ -79,6 +85,46 @@ public class NotificationModule extends ReactContextBaseJavaModule implements Ac
         i.addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
         i.addFlags(Intent.FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS);
         reactContext.startActivity(i);
+    }
+
+    private static String saveIcon(String appPackage, Drawable icon){
+        Bitmap bitmap = ((BitmapDrawable) icon).getBitmap();
+        File file = new File(reactContext.getFilesDir(), appPackage);
+        if(!file.exists()) {
+            try {
+                FileOutputStream fo = new FileOutputStream(file);
+                bitmap.compress(Bitmap.CompressFormat.PNG, 100, fo);
+                fo.close();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+        return "file://"+file.getAbsolutePath();
+    }
+
+    @ReactMethod
+    public void getInstalledApps(Promise promise) {
+        WritableNativeArray params = new WritableNativeArray();
+        PackageManager pm = reactContext.getPackageManager();
+        List<ApplicationInfo> apps = pm.getInstalledApplications(0);
+        for(ApplicationInfo app : apps) {
+            if ((app.flags & ApplicationInfo.FLAG_SYSTEM) == 0 &&
+                    !reactContext.getPackageName().equals(app.packageName)) {
+                WritableNativeMap param = new WritableNativeMap();
+                String appName = app.loadLabel(pm).toString();
+                String appPackage = app.packageName;
+                String appIcon = saveIcon(appPackage, app.loadIcon(pm));
+                //Log.d(TAG, "name: "+appName);
+                //Log.d(TAG, "app: "+appPackage);
+                //Log.d(TAG, "icon: "+appIcon);
+                param.putString("name", appName);
+                param.putString("app", appPackage);
+                param.putString("icon", appIcon);
+                //sendEvent("installedApps", param);
+                params.pushMap(param);
+            }
+        }
+        promise.resolve(params);
     }
 
     @Override

@@ -15,22 +15,21 @@ public class NotificationListener extends NotificationListenerService {
     public void onNotificationPosted(StatusBarNotification sbn) {
         Log.d(TAG, "Notification received: "+sbn.getPackageName()+":"+sbn.getNotification().tickerText);
 
-        String app = sbn.getPackageName();
-        final WritableNativeMap params = new WritableNativeMap();
+        if (sbn.getNotification().tickerText == null) {
+            return;
+        }
 
+        final WritableNativeMap params = new WritableNativeMap();
+        params.putString("text", sbn.getNotification().tickerText.toString());
+
+        String app = sbn.getPackageName();
         if (app.equals(NotificationModule.SmsApp)) {
             params.putString("app", "sms");
         } else {
             params.putString("app", app);
         }
 
-        if (sbn.getNotification().tickerText == null) {
-            params.putString("text", "");
-        } else {
-            params.putString("text", sbn.getNotification().tickerText.toString());
-        }
-
-        NotificationModule.sendEvent(params);
+        NotificationModule.sendEvent("notificationReceived", params);
     }
 
     @Override

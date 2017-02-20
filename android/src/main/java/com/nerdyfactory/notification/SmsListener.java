@@ -34,7 +34,7 @@ public class SmsListener extends BroadcastReceiver {
         final WritableNativeMap params = new WritableNativeMap();
         params.putString("app", "sms");
         params.putString("text", text);
-        NotificationModule.sendEvent(params);
+        NotificationModule.sendEvent("notificationReceived", params);
     }
 
     @Override

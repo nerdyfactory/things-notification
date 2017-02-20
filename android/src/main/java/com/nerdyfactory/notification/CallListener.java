@@ -19,10 +19,12 @@ public class CallListener extends BroadcastReceiver {
             @Override
             public void onCallStateChanged(int state, String incomingNumber) {
                 Log.d(TAG, "Call received: "+incomingNumber);
-                final WritableNativeMap params = new WritableNativeMap();
-                params.putString("app", "phone");
-                params.putString("text", incomingNumber);
-                NotificationModule.sendEvent(params);
+                if (!incomingNumber.isEmpty()) {
+                    final WritableNativeMap params = new WritableNativeMap();
+                    params.putString("app", "phone");
+                    params.putString("text", incomingNumber);
+                    NotificationModule.sendEvent("notificationReceived", params);
+                }
             }
         }, PhoneStateListener.LISTEN_CALL_STATE);
     }
