@@ -108,7 +108,8 @@ public class NotificationModule extends ReactContextBaseJavaModule implements Ac
         PackageManager pm = reactContext.getPackageManager();
         List<ApplicationInfo> apps = pm.getInstalledApplications(0);
         for(ApplicationInfo app : apps) {
-            if ((app.flags & ApplicationInfo.FLAG_SYSTEM) == 0 &&
+            if ((pm.getLaunchIntentForPackage(app.packageName) != null) &&
+                    /*(app.flags & ApplicationInfo.FLAG_SYSTEM) == 0 &&*/
                     !reactContext.getPackageName().equals(app.packageName)) {
                 WritableNativeMap param = new WritableNativeMap();
                 String appName = app.loadLabel(pm).toString();
