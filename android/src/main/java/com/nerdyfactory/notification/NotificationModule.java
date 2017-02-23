@@ -31,7 +31,8 @@ import java.util.Set;
 public class NotificationModule extends ReactContextBaseJavaModule implements ActivityEventListener {
     private static final String TAG = "NotificationModule";
     private static ReactApplicationContext reactContext;
-    public static String SmsApp;
+    private String thisApp;
+    public static String smsApp;
 
     public NotificationModule(ReactApplicationContext reactContext) {
         super(reactContext);
@@ -39,7 +40,8 @@ public class NotificationModule extends ReactContextBaseJavaModule implements Ac
         //this.reactContext.addActivityEventListener(this);
         reactContext.addActivityEventListener(this);
 
-        SmsApp = getDefaultSmsPackage();
+        thisApp = reactContext.getPackageName();
+        smsApp = getDefaultSmsPackage();
         //Log.d(TAG, "sms app: "+SmsApp);
     }
 
@@ -109,8 +111,7 @@ public class NotificationModule extends ReactContextBaseJavaModule implements Ac
         List<ApplicationInfo> apps = pm.getInstalledApplications(0);
         for(ApplicationInfo app : apps) {
             if ((pm.getLaunchIntentForPackage(app.packageName) != null) &&
-                    /*(app.flags & ApplicationInfo.FLAG_SYSTEM) == 0 &&*/
-                    !reactContext.getPackageName().equals(app.packageName)) {
+                    !thisApp.equals(app.packageName)) {
                 WritableNativeMap param = new WritableNativeMap();
                 String appName = app.loadLabel(pm).toString();
                 String appPackage = app.packageName;

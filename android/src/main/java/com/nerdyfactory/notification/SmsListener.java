@@ -31,7 +31,7 @@ public class SmsListener extends BroadcastReceiver {
         Log.d(TAG, "Sms Received: "+message.getOriginatingAddress()+":"+message.getMessageBody());
 
         String text = message.getOriginatingAddress()+" "+message.getMessageBody();
-        final WritableNativeMap params = new WritableNativeMap();
+        WritableNativeMap params = new WritableNativeMap();
         params.putString("app", "sms");
         params.putString("text", text);
         NotificationModule.sendEvent("notificationReceived", params);

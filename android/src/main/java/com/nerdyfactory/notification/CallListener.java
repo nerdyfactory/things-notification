@@ -20,7 +20,7 @@ public class CallListener extends BroadcastReceiver {
             public void onCallStateChanged(int state, String incomingNumber) {
                 Log.d(TAG, "Call received: "+incomingNumber);
                 if (!incomingNumber.isEmpty()) {
-                    final WritableNativeMap params = new WritableNativeMap();
+                    WritableNativeMap params = new WritableNativeMap();
                     params.putString("app", "phone");
                     params.putString("text", incomingNumber);
                     NotificationModule.sendEvent("notificationReceived", params);

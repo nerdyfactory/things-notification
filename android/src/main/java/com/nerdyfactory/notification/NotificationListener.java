@@ -6,8 +6,6 @@ import android.util.Log;
 
 import com.facebook.react.bridge.WritableNativeMap;
 
-import java.util.Arrays;
-
 public class NotificationListener extends NotificationListenerService {
     private static final String TAG = "NotificationListener";
 
@@ -19,11 +17,11 @@ public class NotificationListener extends NotificationListenerService {
             return;
         }
 
-        final WritableNativeMap params = new WritableNativeMap();
+        WritableNativeMap params = new WritableNativeMap();
         params.putString("text", sbn.getNotification().tickerText.toString());
 
         String app = sbn.getPackageName();
-        if (app.equals(NotificationModule.SmsApp)) {
+        if (app.equals(NotificationModule.smsApp)) {
             params.putString("app", "sms");
         } else {
             params.putString("app", app);
